@@ -71,7 +71,7 @@ def read_configuration_file(configuration_file):
         return dict()
 
 
-def get_location(slots):
+def get_location(conf, slots):
     location = conf.get("default_city")
 
     for (slot_value, slot) in slots.items():
@@ -85,7 +85,7 @@ def get_weather_forecast(conf, slots):
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
 
-    location = get_location(slots)
+    location = get_location(conf, slots)
     time = None
 
     for (slot_value, slot) in slots.items():
