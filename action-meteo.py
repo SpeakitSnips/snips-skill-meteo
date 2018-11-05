@@ -71,20 +71,26 @@ def read_configuration_file(configuration_file):
         return dict()
 
 
+def get_location(slots):
+    location = conf.get("default_city")
+
+    for (slot_value, slot) in slots.items():
+        if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi"]:
+            location = slot[0].slot_value.value.value
+            
+    return location
+
 def get_weather_forecast(conf, slots):
     '''
     Parse the query slots, and fetch the weather forecast from Open Weather Map's API
     '''
 
-    location = conf.get("default_city")
+    location = get_location(slots)
     time = None
 
     for (slot_value, slot) in slots.items():
-        if slot_value in ["forecast_locality", "forecast_country", "forecast_region", "forecast_geographical_poi"]:
-            location = slot[0].slot_value.value.value
-        elif slot_value == "forecast_start_datetime":
+        if slot_value == "forecast_start_datetime":
             time = slot[0].slot_value.value
-
 
     forecast_url = "{0}/forecast?q={1}&APPID={2}&units={3}".format(
         WEATHER_API_BASE_URL, location, conf["secret"].get("weather_api_key"), UNITS)
@@ -198,7 +204,8 @@ def intent_received(hermes, intent_message):
         weather_forecast = get_weather_forecast(conf, slots)
 
         if weather_forecast is None:
-            sentence = "Je n'ai pas trouvé, désolé."
+            location = get_location(slots)
+            sentence = u'Désolé. Je ne sais pas quel temps il fait à {}'.format(location)
 
         else:
             if weather_forecast["now"]:
