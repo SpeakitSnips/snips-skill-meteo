@@ -3,6 +3,7 @@
 
 import ConfigParser
 from hermes_python.hermes import Hermes
+from hermes_python.ffi.utils import MqttOptions
 from hermes_python.ontology import *
 import io
 
@@ -13,13 +14,9 @@ import json
 
 import requests
 
+mqtt_opts = MqttOptions()
 
 fromtimestamp = datetime.datetime.fromtimestamp
-
-MQTT_IP_ADDR = "localhost"
-MQTT_PORT = 1883
-MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
-
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
 CONFIG_INI = "config.ini"
@@ -238,5 +235,5 @@ def intent_received(hermes, intent_message):
         hermes.publish_end_session(intent_message.session_id, unicode(sentence, "utf-8"))
 
 
-with Hermes(MQTT_ADDR) as h:
+with Hermes(mqtt_options=mqtt_opts) as h:
     h.subscribe_intents(intent_received).start()
