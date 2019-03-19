@@ -5,6 +5,7 @@ import ConfigParser
 from hermes_python.hermes import Hermes
 from hermes_python.ffi.utils import MqttOptions
 from hermes_python.ontology import *
+from hermes_python.ontology.dialogue import InstantTimeValue, TimeIntervalValue
 import io
 
 import datetime
